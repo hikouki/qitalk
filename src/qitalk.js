@@ -102,6 +102,12 @@
         return this.options.tplDir + '/' + tpl + '.tpl';
     };
 
-    global.Qitalk = new Qitalk();
+    if ( typeof window !== "undefined" ) {
+	    window.Qitalk = new Qitalk();
+    }
+
+    if ( typeof module !== "undefined" && module.exports ) {
+	    module.exports = new Qitalk();
+    }
 })(window, jQuery);
 
