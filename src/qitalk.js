@@ -65,7 +65,7 @@
     };
 
     Qitalk.prototype.trigger = function(name, value) {
-        this.$root.trigger(name);
+        this.$root.trigger(name, value);
     };
 
     Qitalk.prototype._asyncCacheTpl = function() {
