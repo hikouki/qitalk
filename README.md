@@ -1,18 +1,18 @@
 # qitalk
 qimessaging.js framework on Pepper
 
-# Dependencies
+## Dependencies
 
 - qimessaging.js v2.0+
 - jQuery
 
-# Functions
+## Functions
 
 - cache services
 - view html templete
 - switch html templete on single page
 
-# Usage
+## Usage
 
 ### Example
 
@@ -94,7 +94,9 @@ Qitalk.proxy.ALTextToSpeech.say('I am pepper');
 - Qitalk.subscriber(name, function) // Recive signal to tablet from pepper.
 - Qitalk.raiseEvent(name, value) // Send signal to pepper from tablet.
 
+## License
 
+MIT
 
 
 
