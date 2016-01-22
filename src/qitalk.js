@@ -44,18 +44,28 @@
         }
     };
 
-    Qitalk.prototype.subscriber = function(name, func) {
+    Qitalk.prototype.on = function(name, func) {
+
+        this.$root.on(name, func);
+
+        var self = this;
         this.qisession.service("ALMemory").then(function(m) {
             m.subscriber(name).then(function(sub) {
-                sub.signal.connect(func);
+                sub.signal.connect(function(data) {
+                    self.$root.trigger(name, data);
+                });
             });
         });
     };
 
-    Qitalk.prototype.raiseEvent = function(name, value) {
+    Qitalk.prototype.send = function(name, value) {
         this.qisession.service("ALMemory").then(function(m) {
             m.raiseEvent(name, value);
         });
+    };
+
+    Qitalk.prototype.trigger = function(name, value) {
+        this.$root.trigger(name);
     };
 
     Qitalk.prototype._asyncCacheTpl = function() {
@@ -110,4 +120,3 @@
 	    module.exports = new Qitalk();
     }
 })(window, jQuery);
-
