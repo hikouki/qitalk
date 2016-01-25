@@ -50,7 +50,10 @@
 
     Qitalk.prototype.on = function(name, func) {
 
-        this.$root.on(name, func);
+        this.$root.on(name, function() {
+            Array.prototype.shift.apply(arguments);
+            func.apply(null, arguments);
+        });
 
         var self = this;
         this.qisession.service("ALMemory").then(function(m) {
