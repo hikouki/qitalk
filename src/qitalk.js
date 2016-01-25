@@ -12,16 +12,19 @@
         this.options = $.extend({
             host    : null,
             root    : '#qitalk',
-            tplDir  : './tpl',
-            preload : {
-                tpl     : [],
-                service : ['ALMemory']
-            },
-            handle : {
-                start : function(){},
-                presented: function(){}
-            }
+            tplDir  : './tpl'
         }, options);
+
+        this.options.handle = $.extend({
+            start : function(){},
+            presented: function(){}
+        }, this.options.handle);
+
+        this.options.preload = $.extend({
+            tpl     : [],
+            service : ['ALMemory']
+        }, this.options.preload);
+
         this.$root = $(this.options.root);
         this.tplCache = {};
         this.proxy = {};
@@ -37,12 +40,12 @@
         this.params = params;
         if(tpl in this.tplCache) {
             this.$root.html(this.tplCache[tpl]);
-            this.options.handle.presented && this.options.handle.presented();
+            this.options.handle.presented();
             this.params = null;
         } else {
             var self = this;
             this.$root.load(this._makeTplPath(tpl), null, function() {
-                self.options.handle.presented && self.options.handle.presented();
+                self.options.handle.presented();
                 this.params = null;
             });
         }
