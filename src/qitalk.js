@@ -124,10 +124,10 @@
     };
 
     if ( typeof window !== "undefined" ) {
-	    window.Qitalk = new Qitalk();
+        window.Qitalk = new Qitalk();
     }
 
     if ( typeof module !== "undefined" && module.exports ) {
-	    module.exports = new Qitalk();
+        module.exports = new Qitalk();
     }
 })(window, jQuery);
