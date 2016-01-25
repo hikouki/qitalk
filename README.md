@@ -91,8 +91,8 @@ Qitalk.proxy.ALTextToSpeech.say('I am pepper');
 
 ### Wrap qimessaging APIs
 
-- Qitalk.subscriber(name, function) // Recive signal to tablet from pepper.
-- Qitalk.raiseEvent(name, value) // Send signal to pepper from tablet.
+- Qitalk.on(name, function) // Recive signal to tablet from pepper.
+- Qitalk.send(name, value) // Send signal to pepper from tablet.
 
 ## License
 
