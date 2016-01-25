@@ -11,7 +11,7 @@
 
     Qitalk.prototype.init = function(options) {
         this.options = $.extend({
-            host    : '',
+            host    : null,
             root    : '#qitalk',
             tplDir  : './tpl',
             preload : {
@@ -19,44 +19,58 @@
                 service : ['ALMemory']
             },
             handle : {
-                start : function(){}
+                start : function(){},
+                presented: function(){}
             }
         }, options);
         this.$root = $(this.options.root);
         this.tplCache = {};
         this.proxy = {};
-        this.qisession = new QiSession(null, null, this.options.host);
-
-        this._asyncCacheTpl();
-
-        this._asyncCacheService().then(this.options.handle.start);
+        var self = this;
+        QiSession(function(session) {
+            self.qisession = session;
+            self._asyncCacheTpl();
+            self._asyncCacheService().then(self.options.handle.start);
+        }, function(a) { console.error('failed connection.') }, this.options.host);
     };
 
     Qitalk.prototype.presentView = function(tpl, params) {
         this.params = params;
         if(tpl in this.tplCache) {
             this.$root.html(this.tplCache[tpl]);
+            this.options.handle.presented && this.options.handle.presented();
             this.params = null;
         } else {
             var self = this;
             this.$root.load(this._makeTplPath(tpl), null, function() {
+                self.options.handle.presented && self.options.handle.presented();
                 this.params = null;
             });
         }
     };
 
-    Qitalk.prototype.subscriber = function(name, func) {
+    Qitalk.prototype.on = function(name, func) {
+
+        this.$root.on(name, func);
+
+        var self = this;
         this.qisession.service("ALMemory").then(function(m) {
             m.subscriber(name).then(function(sub) {
-                sub.signal.connect(func);
+                sub.signal.connect(function(data) {
+                    self.$root.trigger(name, data);
+                });
             });
         });
     };
 
-    Qitalk.prototype.raiseEvent = function(name, value) {
+    Qitalk.prototype.send = function(name, value) {
         this.qisession.service("ALMemory").then(function(m) {
             m.raiseEvent(name, value);
         });
+    };
+
+    Qitalk.prototype.trigger = function(name, value) {
+        this.$root.trigger(name, value);
     };
 
     Qitalk.prototype._asyncCacheTpl = function() {
@@ -83,16 +97,17 @@
         var serviceDefs = [];
         $(services).each(function() {
             var name = this;
-            (function(d) {
-                self.qisession.service(name).then(function(service) {
-                    self.proxy[name] = service;
-                    d.resolve();
-                });
-                serviceDefs.push(d.promise());
-            })(new $.Deferred);
+            var serviceDef = new $.Deferred;
+            self.qisession.service(name).then(function(service) {
+                self.proxy[name] = service;
+                serviceDef.resolve();
+            }, function(error) {
+                console.error("ERROR cache service: " + name);
+            });
+            serviceDefs.push(serviceDef.promise());
         });
 
-        $.when.apply(this, serviceDefs).then(function() {
+        $.when.apply(null, serviceDefs).then(function() {
             d.resolve();
         });
 
@@ -111,6 +126,5 @@
 	    module.exports = new Qitalk();
     }
 })(window, jQuery);
-
 
 },{}]},{},[1]);
