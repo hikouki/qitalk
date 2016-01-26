@@ -1,4 +1,4 @@
-# qitalk(β)
+# qitalk
 qimessaging.js framework on Pepper
 
 ## Dependencies
