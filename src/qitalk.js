@@ -67,7 +67,7 @@
         var self = this;
         this.qisession.service("ALMemory").then(function(m) {
             m.subscriber(name).then(function(sub) {
-                sub.signal.connect(function(data) {
+                sub.signal.connect().then(function(data) {
                     self.$root.trigger(name, data);
                 });
             });
