@@ -28,6 +28,7 @@
         this.$root = $(this.options.root);
         this.tplCache = {};
         this.proxy = {};
+        this.subscribeEventIds = [];
         var self = this;
         QiSession(function(session) {
             self.qisession = session;
@@ -51,7 +52,12 @@
         }
     };
 
-    Qitalk.prototype.on = function(name, func) {
+    Qitalk.prototype.on = function(name, func, id) {
+
+        if (id) {
+            if ($.inArray(id,  this.subscribeEventIds) != -1) return;
+            this.subscribeEventIds.push(id);
+        }
 
         this.$root.on(name, function() {
             Array.prototype.shift.apply(arguments);
