@@ -3,7 +3,7 @@
     "main": "release/qitalk.js",
     "license": "MIT",
     "ignore": [
-        "package.json"
+        "package.json",
         "gulpfile.js"
     ],
     "keywords": [
