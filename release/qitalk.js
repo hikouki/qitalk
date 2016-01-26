@@ -13,16 +13,19 @@
         this.options = $.extend({
             host    : null,
             root    : '#qitalk',
-            tplDir  : './tpl',
-            preload : {
-                tpl     : [],
-                service : ['ALMemory']
-            },
-            handle : {
-                start : function(){},
-                presented: function(){}
-            }
+            tplDir  : './tpl'
         }, options);
+
+        this.options.handle = $.extend({
+            start : function(){},
+            presented: function(){}
+        }, this.options.handle);
+
+        this.options.preload = $.extend({
+            tpl     : [],
+            service : ['ALMemory']
+        }, this.options.preload);
+
         this.$root = $(this.options.root);
         this.tplCache = {};
         this.proxy = {};
@@ -38,12 +41,12 @@
         this.params = params;
         if(tpl in this.tplCache) {
             this.$root.html(this.tplCache[tpl]);
-            this.options.handle.presented && this.options.handle.presented();
+            this.options.handle.presented();
             this.params = null;
         } else {
             var self = this;
             this.$root.load(this._makeTplPath(tpl), null, function() {
-                self.options.handle.presented && self.options.handle.presented();
+                self.options.handle.presented();
                 this.params = null;
             });
         }
@@ -51,7 +54,10 @@
 
     Qitalk.prototype.on = function(name, func) {
 
-        this.$root.on(name, func);
+        this.$root.on(name, function() {
+            Array.prototype.shift.apply(arguments);
+            func.apply(null, arguments);
+        });
 
         var self = this;
         this.qisession.service("ALMemory").then(function(m) {
@@ -119,11 +125,11 @@
     };
 
     if ( typeof window !== "undefined" ) {
-	    window.Qitalk = new Qitalk();
+        window.Qitalk = new Qitalk();
     }
 
     if ( typeof module !== "undefined" && module.exports ) {
-	    module.exports = new Qitalk();
+        module.exports = new Qitalk();
     }
 })(window, jQuery);
 
