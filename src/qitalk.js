@@ -29,6 +29,7 @@
         this.tplCache = {};
         this.proxy = {};
         this.subscribeEventIds = [];
+        this.swapViews = [];
         var self = this;
         QiSession(function(session) {
             self.qisession = session;
@@ -39,17 +40,30 @@
 
     Qitalk.prototype.presentView = function(tpl, params) {
         this.params = params;
+        var $swapView = $('<div />');
+        $swapView.css('position', 'absolute')
+            .css('top', '0').css('left', '0');
         if(tpl in this.tplCache) {
-            this.$root.html(this.tplCache[tpl]);
+            $swapView.html(this.tplCache[tpl]);
             this.options.handle.presented();
             this.params = null;
         } else {
             var self = this;
-            this.$root.load(this._makeTplPath(tpl), null, function() {
+            $swapView.load(this._makeTplPath(tpl), null, function() {
                 self.options.handle.presented();
                 this.params = null;
             });
         }
+
+        $swapView.attr('id', this.$root.attr('id'));
+
+        var self = this;
+        $swapView.ready(function() {
+            self.$root.remove();
+            self.$root = $swapView;
+        });
+
+        $('body').prepend($swapView);
     };
 
     Qitalk.prototype.on = function(name, func, id) {
