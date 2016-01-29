@@ -55,7 +55,7 @@
             });
         }
 
-        self.$root.children().addClass('qitalk--scrap').css('z-index', '-1');
+        this.$root.children().addClass('qitalk--scrap').css('z-index', '-1');
         this.$root.prepend($swapView);
 
         var self = this;
