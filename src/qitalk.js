@@ -55,25 +55,23 @@
             });
         }
 
-        $swapView.attr('id', this.$root.attr('id'));
+        self.$root.children().addClass('qitalk--scrap').css('z-index', '-1');
+        this.$root.prepend($swapView);
 
         var self = this;
         $swapView.ready(function() {
-            self.$root.remove();
-            self.$root = $swapView;
+            self.$root.find('.qitalk--scrap').remove();
         });
-
-        $('body').prepend($swapView);
     };
 
     Qitalk.prototype.on = function(name, func, id) {
-
         if (id) {
             if ($.inArray(id,  this.subscribeEventIds) != -1) return;
             this.subscribeEventIds.push(id);
         }
 
         this.$root.on(name, function() {
+            console.log('on: ' + name);
             Array.prototype.shift.apply(arguments);
             func.apply(null, arguments);
         });
@@ -82,6 +80,7 @@
         this.qisession.service("ALMemory").then(function(m) {
             m.subscriber(name).then(function(sub) {
                 sub.signal.connect(function(data) {
+                    console.log('trigger: ' + name);
                     self.$root.trigger(name, data);
                 });
             });
