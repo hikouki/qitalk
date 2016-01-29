@@ -29,7 +29,6 @@
         this.tplCache = {};
         this.proxy = {};
         this.subscribeEventIds = [];
-        this.swapViews = [];
         var self = this;
         QiSession(function(session) {
             self.qisession = session;
