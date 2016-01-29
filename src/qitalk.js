@@ -1,5 +1,5 @@
 /**
- * qitalk v0.1.0
+ * qitalk v0.1.1
  * qimessaging2 framework
  * @author: hikouki
  */

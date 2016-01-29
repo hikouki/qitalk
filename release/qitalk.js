@@ -1,6 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /**
- * qitalk v0.1.0
+ * qitalk v0.1.1
  * qimessaging2 framework
  * @author: hikouki
  */
@@ -40,27 +40,38 @@
 
     Qitalk.prototype.presentView = function(tpl, params) {
         this.params = params;
+        var $swapView = $('<div />');
+        $swapView.css('position', 'absolute')
+            .css('top', '0').css('left', '0');
         if(tpl in this.tplCache) {
-            this.$root.html(this.tplCache[tpl]);
+            $swapView.html(this.tplCache[tpl]);
             this.options.handle.presented();
             this.params = null;
         } else {
             var self = this;
-            this.$root.load(this._makeTplPath(tpl), null, function() {
+            $swapView.load(this._makeTplPath(tpl), null, function() {
                 self.options.handle.presented();
                 this.params = null;
             });
         }
+
+        self.$root.children().addClass('qitalk--scrap').css('z-index', '-1');
+        this.$root.prepend($swapView);
+
+        var self = this;
+        $swapView.ready(function() {
+            self.$root.find('.qitalk--scrap').remove();
+        });
     };
 
     Qitalk.prototype.on = function(name, func, id) {
-
         if (id) {
             if ($.inArray(id,  this.subscribeEventIds) != -1) return;
             this.subscribeEventIds.push(id);
         }
 
         this.$root.on(name, function() {
+            console.log('on: ' + name);
             Array.prototype.shift.apply(arguments);
             func.apply(null, arguments);
         });
@@ -69,6 +80,7 @@
         this.qisession.service("ALMemory").then(function(m) {
             m.subscriber(name).then(function(sub) {
                 sub.signal.connect(function(data) {
+                    console.log('trigger: ' + name);
                     self.$root.trigger(name, data);
                 });
             });
