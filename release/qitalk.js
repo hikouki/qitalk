@@ -1,6 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /**
- * qitalk v0.1.1
+ * qitalk v0.1.2
  * qimessaging2 framework
  * @author: hikouki
  */
@@ -45,14 +45,9 @@
             .css('top', '0').css('left', '0');
         if(tpl in this.tplCache) {
             $swapView.html(this.tplCache[tpl]);
-            this.options.handle.presented();
             this.params = null;
         } else {
-            var self = this;
-            $swapView.load(this._makeTplPath(tpl), null, function() {
-                self.options.handle.presented();
-                this.params = null;
-            });
+            $swapView.load(this._makeTplPath(tpl));
         }
 
         this.$root.children().addClass('qitalk--scrap').css('z-index', '-1');
@@ -61,6 +56,7 @@
         var self = this;
         $swapView.ready(function() {
             self.$root.find('.qitalk--scrap').remove();
+            self.options.handle.presented();
         });
     };
 
