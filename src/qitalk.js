@@ -44,14 +44,9 @@
             .css('top', '0').css('left', '0');
         if(tpl in this.tplCache) {
             $swapView.html(this.tplCache[tpl]);
-            this.options.handle.presented();
             this.params = null;
         } else {
-            var self = this;
-            $swapView.load(this._makeTplPath(tpl), null, function() {
-                self.options.handle.presented();
-                this.params = null;
-            });
+            $swapView.load(this._makeTplPath(tpl));
         }
 
         this.$root.children().addClass('qitalk--scrap').css('z-index', '-1');
@@ -60,6 +55,7 @@
         var self = this;
         $swapView.ready(function() {
             self.$root.find('.qitalk--scrap').remove();
+            self.options.handle.presented();
         });
     };
 
