@@ -6,7 +6,7 @@ qimessaging.js framework on Pepper
 - qimessaging.js v2.0+
 - jQuery
 
-## Functions
+## Features
 
 - cache services
 - view html templete
